@@ -5,13 +5,19 @@ page = st.sidebar.selectbox("Page", ["Home", "Buy?", "Maps", "About"])
 st.title("Test Interactive Map")
 
 #INTERACTIVETEST
-from PIL import Image, ImageOps
+import streamlit as st
+from PIL import Image
 import os
 from streamlit_image_coordinates import streamlit_image_coordinates
 
 # --- CONFIG ---
 IMAGE_FOLDER = "Europe"
 MAP_WIDTH = 633  # Resize for display
+
+# --- PAGE SELECTION ---
+st.set_page_config(layout="wide")
+st.title("Welcome to A Geography Channel Games")
+page = st.sidebar.selectbox("Page", ["Home", "Buy?", "Maps", "About"])
 
 # --- LOAD COUNTRY IMAGES ---
 @st.cache_data
@@ -41,53 +47,12 @@ def compose_map(layers):
     base = Image.new("RGBA", next(iter(country_images.values())).size, (0, 0, 0, 1))
     for country, color in layers.items():
         original = country_images[country]
-        # Create a solid color image
         solid = Image.new("RGBA", original.size, color)
-
-        # Use the alpha channel of the original as a mask
         mask = original.split()[-1]
         tinted = Image.composite(solid, Image.new("RGBA", original.size, (0, 0, 0, 0)), mask)
-
         base = Image.alpha_composite(base, tinted)
     return base
 
-# --- UI ---
-st.title("🗺️ Clickable Map Game")
-
-# 1. COLOR PICKER
-color = st.color_picker("Select a color to apply")
-
-# 2. COMPOSITE MAP + COORDINATE CLICK
-st.subheader("Click a country to color it")
-
-composite_map = compose_map(st.session_state.colored_layers)
-resized_map = composite_map.resize(st.session_state.map_size)
-
-# Show map and get coordinates
-coords = streamlit_image_coordinates(resized_map, key="map")
-
-# 3. DETECT COUNTRY FROM CLICK
-if coords is not None:
-    x_ratio = resized_map.width / composite_map.width
-    y_ratio = resized_map.height / composite_map.height
-    x = int(coords["x"] / x_ratio)
-    y = int(coords["y"] / y_ratio)
-
-    selected_country = None
-    for name, img in country_images.items():
-        r, g, b, a = img.getpixel((x, y))
-        if a > 0:
-            selected_country = name
-            break
-
-    if selected_country:
-        st.success(f"Selected country: {selected_country}")
-        st.session_state.colored_layers[selected_country] = color
-        st.rerun()
-    else:
-        st.warning("Clicked outside any country.")
-# Show final map
-st.image(resized_map)
 if page == "Maps":
     game = st.sidebar.selectbox("Select Game", ["Europe 2025", "The Americas 2025", "Africa 2025", "Asia 2025", "Southeast Asia + Oceania 2025"])
     if game == "Europe 2025":
