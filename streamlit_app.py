@@ -131,7 +131,7 @@ if coords is not None:
     if selected_country:
         st.success(f"Selected country: {selected_country}")
         st.session_state.colored_layers[selected_country] = color
-        st.experimental_rerun()
+        st.rerun()
     else:
         st.warning("Clicked outside any country.")
 
