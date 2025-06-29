@@ -7,7 +7,7 @@ from PIL import Image, ImageEnhance, ImageOps
 import os
 
 # --- CONFIG ---
-IMAGE_FOLDER = "country_images"  # Your folder with country .png files
+IMAGE_FOLDER = "Europe"  # Your folder with country .png files
 MAP_WIDTH = 633  # Optional resizing
 
 # --- LOAD COUNTRIES ---
