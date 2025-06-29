@@ -2,6 +2,8 @@ import streamlit as st
 
 st.title("Welcome to A Geography Channel Games")
 page = st.sidebar.selectbox("Page", ["Home", "Buy?", "Maps", "About"])
+st.title("Test Interactive Map")
+
 if page == "Maps":
     game = st.sidebar.selectbox("Select Game", ["Europe 2025", "The Americas 2025", "Africa 2025", "Asia 2025", "Southeast Asia + Oceania 2025"])
     if game == "Europe 2025":
