@@ -41,8 +41,13 @@ def compose_map(layers):
     base = Image.new("RGBA", next(iter(country_images.values())).size, (0, 0, 0, 1))
     for country, color in layers.items():
         original = country_images[country]
-        tinted = ImageOps.colorize(original.convert("L"), black="black", white=color)
-        tinted.putalpha(original.split()[-1])  # Keep alpha
+        # Create a solid color image
+        solid = Image.new("RGBA", original.size, color)
+
+        # Use the alpha channel of the original as a mask
+        mask = original.split()[-1]
+        tinted = Image.composite(solid, Image.new("RGBA", original.size, (0, 0, 0, 0)), mask)
+
         base = Image.alpha_composite(base, tinted)
     return base
 
@@ -81,7 +86,6 @@ if coords is not None:
         st.rerun()
     else:
         st.warning("Clicked outside any country.")
-
 # Show final map
 st.image(resized_map)
 if page == "Maps":
