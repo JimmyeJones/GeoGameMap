@@ -48,14 +48,7 @@ def compose_map(layers):
         tinted = Image.composite(solid, Image.new("RGBA", original.size, (0, 0, 0, 0)), mask)
         base = Image.alpha_composite(base, tinted)
     return base
-st.markdown("### 🌍 Europe 2025")
 
-color = st.color_picker("🎨 Select a color to apply", value="#ff0000")
-
-composite_map = compose_map(st.session_state.colored_layers)
-resized_map = composite_map.resize(st.session_state.map_size)
-
-coords = streamlit_image_coordinates(resized_map, key="map")
 
 if page == "Maps":
     game = st.sidebar.selectbox("Select Game", ["Europe 2025", "The Americas 2025", "Africa 2025", "Asia 2025", "Southeast Asia + Oceania 2025"])
