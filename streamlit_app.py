@@ -31,7 +31,7 @@ if "colored_layers" not in st.session_state:
 
 # --- SHOW MAP ---
 def compose_map(layers):
-    base = Image.new("RGBA", next(iter(country_images.values())).size, (0, 0, 0, 1))
+    base = Image.open("Europe/map.png").convert("RGBA")
     for country, color in layers.items():
         original = country_images[country]
         # Tint the image
