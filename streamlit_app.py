@@ -3,59 +3,6 @@ import streamlit as st
 st.title("Welcome to A Geography Channel Games")
 page = st.sidebar.selectbox("Page", ["Home", "Buy?", "Maps", "About"])
 st.title("Test Interactive Map")
-from PIL import Image, ImageEnhance, ImageOps
-import os
-
-# --- CONFIG ---
-IMAGE_FOLDER = "Europe"  # Your folder with country .png files
-MAP_WIDTH = 633  # Optional resizing
-
-# --- LOAD COUNTRIES ---
-@st.cache_data
-def load_country_images():
-    countries = {}
-    for filename in os.listdir(IMAGE_FOLDER):
-        if filename.endswith(".png"):
-            name = filename[:-4]
-            path = os.path.join(IMAGE_FOLDER, filename)
-            img = Image.open(path).convert("RGBA")
-            countries[name] = img
-    return countries
-
-country_images = load_country_images()
-country_names = sorted(country_images.keys())
-
-# --- STATE HANDLING ---
-if "colored_layers" not in st.session_state:
-    st.session_state.colored_layers = {}
-
-# --- SHOW MAP ---
-def compose_map(layers):
-    base = Image.open("Europe/map.png").convert("RGBA")
-    for country, color in layers.items():
-        original = country_images[country]
-        # Tint the image
-        tinted = ImageOps.colorize(original.convert("L"), black="black", white=color)
-        tinted.putalpha(original.split()[-1])  # Retain alpha
-        base = Image.alpha_composite(base, tinted)
-    return base
-
-
-# --- DISPLAY CURRENT MAP ---
-st.subheader("Current Map")
-composite_map = compose_map(st.session_state.colored_layers)
-st.image(composite_map.resize((MAP_WIDTH, int(MAP_WIDTH * composite_map.height / composite_map.width))))
-
-# --- CONTROLS ---
-st.subheader("Update a Country")
-with st.form("update_form"):
-    country = st.selectbox("Select a country", country_names)
-    color = st.color_picker("Choose a color")
-    submitted = st.form_submit_button("Apply")
-
-if submitted:
-    st.session_state.colored_layers[country] = color
-    st.rerun()
 
 #INTERACTIVETEST
 from PIL import Image, ImageOps
