@@ -55,7 +55,7 @@ with st.form("update_form"):
 
 if submitted:
     st.session_state.colored_layers[country] = color
-    st.experimental_rerun()
+    st.rerun()
 if page == "Maps":
     game = st.sidebar.selectbox("Select Game", ["Europe 2025", "The Americas 2025", "Africa 2025", "Asia 2025", "Southeast Asia + Oceania 2025"])
     if game == "Europe 2025":
