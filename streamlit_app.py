@@ -14,10 +14,6 @@ from streamlit_image_coordinates import streamlit_image_coordinates
 IMAGE_FOLDER = "Europe"
 MAP_WIDTH = 633  # Resize for display
 
-# --- PAGE SELECTION ---
-st.set_page_config(layout="wide")
-st.title("Welcome to A Geography Channel Games")
-page = st.sidebar.selectbox("Page", ["Home", "Buy?", "Maps", "About"])
 
 # --- LOAD COUNTRY IMAGES ---
 @st.cache_data
