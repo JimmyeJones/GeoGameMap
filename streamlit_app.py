@@ -38,7 +38,7 @@ if "map_size" not in st.session_state:
 
 # --- COMPOSITE MAP ---
 def compose_map(layers):
-    base = Image.open("Europe/map.png").convert("RGBA")
+    base = Image.new("RGBA", next(iter(country_images.values())).size, (0, 0, 0, 1))
     for country, color in layers.items():
         original = country_images[country]
         tinted = ImageOps.colorize(original.convert("L"), black="black", white=color)
