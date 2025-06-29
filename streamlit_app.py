@@ -59,16 +59,46 @@ coords = streamlit_image_coordinates(resized_map, key="map")
 
 if page == "Maps":
     game = st.sidebar.selectbox("Select Game", ["Europe 2025", "The Americas 2025", "Africa 2025", "Asia 2025", "Southeast Asia + Oceania 2025"])
+
     if game == "Europe 2025":
-        st.image("Main Maps/europe map.png")
-    if game == "The Americas 2025":
+        st.markdown("### 🌍 Europe 2025")
+        color = st.color_picker("🎨 Select a color to apply", value="#ff0000")
+
+        composite_map = compose_map(st.session_state.colored_layers)
+        resized_map = composite_map.resize(st.session_state.map_size)
+
+        coords = streamlit_image_coordinates(resized_map, key="map")
+
+        if coords is not None:
+            x_ratio = resized_map.width / composite_map.width
+            y_ratio = resized_map.height / composite_map.height
+            x = int(coords["x"] / x_ratio)
+            y = int(coords["y"] / y_ratio)
+
+            selected_country = None
+            for name, img in country_images.items():
+                if x >= img.width or y >= img.height:
+                    continue
+                _, _, _, a = img.getpixel((x, y))
+                if a > 0:
+                    selected_country = name
+                    break
+
+            if selected_country:
+                st.session_state.colored_layers[selected_country] = color
+                st.rerun()
+
+        st.image(resized_map)
+
+    elif game == "The Americas 2025":
         st.image("Main Maps/The Americas map.png")
-    if game == "Africa 2025":
+    elif game == "Africa 2025":
         st.image("Main Maps/Africa map.png")
-    if game == "Asia 2025":
+    elif game == "Asia 2025":
         st.image("Main Maps/Asia map.png")
-    if game == "Southeast Asia + Oceania 2025":
+    elif game == "Southeast Asia + Oceania 2025":
         st.image("Main Maps/seao map.png")
+
 #Homepage
 if page == "Home":
     st.subheader("Home")
