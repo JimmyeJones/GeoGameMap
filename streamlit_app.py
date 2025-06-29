@@ -10,6 +10,52 @@ from PIL import Image
 import os
 from streamlit_image_coordinates import streamlit_image_coordinates
 
+# --- CONFIG ---
+IMAGE_FOLDER = "Europe"
+MAP_WIDTH = 633  # Resize for display
+
+
+# --- LOAD COUNTRY IMAGES ---
+@st.cache_data
+def load_country_images():
+    countries = {}
+    for filename in os.listdir(IMAGE_FOLDER):
+        if filename.endswith(".png"):
+            name = filename[:-4]
+            path = os.path.join(IMAGE_FOLDER, filename)
+            img = Image.open(path).convert("RGBA")
+            countries[name] = img
+    return countries
+
+country_images = load_country_images()
+country_names = sorted(country_images.keys())
+
+# --- STATE HANDLING ---
+if "colored_layers" not in st.session_state:
+    st.session_state.colored_layers = {}
+if "map_size" not in st.session_state:
+    sample_img = next(iter(country_images.values()))
+    aspect = sample_img.height / sample_img.width
+    st.session_state.map_size = (MAP_WIDTH, int(MAP_WIDTH * aspect))
+
+# --- COMPOSITE MAP ---
+def compose_map(layers):
+    base = Image.open("map.png").convert("RGBA")
+    for country, color in layers.items():
+        original = country_images[country]
+        solid = Image.new("RGBA", original.size, color)
+        mask = original.split()[-1]
+        tinted = Image.composite(solid, Image.new("RGBA", original.size, (0, 0, 0, 0)), mask)
+        base = Image.alpha_composite(base, tinted)
+    return base
+st.markdown("### 🌍 Europe 2025")
+
+color = st.color_picker("🎨 Select a color to apply", value="#ff0000")
+
+composite_map = compose_map(st.session_state.colored_layers)
+resized_map = composite_map.resize(st.session_state.map_size)
+
+coords = streamlit_image_coordinates(resized_map, key="map")
 
 if page == "Maps":
     game = st.sidebar.selectbox("Select Game", ["Europe 2025", "The Americas 2025", "Africa 2025", "Asia 2025", "Southeast Asia + Oceania 2025"])
