@@ -40,7 +40,7 @@ if "map_size" not in st.session_state:
 
 # --- COMPOSITE MAP ---
 def compose_map(layers):
-    base = Image.open(map.png).convert("RGBA")
+    base = Image.open("map.png").convert("RGBA")
     for country, color in layers.items():
         original = country_images[country]
         solid = Image.new("RGBA", original.size, color)
