@@ -40,7 +40,6 @@ def compose_map(layers):
         base = Image.alpha_composite(base, tinted)
     return base
 
-st.title("🗺️ Digital Map Game")
 
 # --- DISPLAY CURRENT MAP ---
 st.subheader("Current Map")
